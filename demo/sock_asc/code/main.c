@@ -27,7 +27,7 @@
 #include "OD.h"
 #include "CO_storage_sock.h"
 #include "CO_driver_target.h"
-#include "ASC_uart.h"
+#include "ASC_sock.h"
 
 #define log_printf(macropar_message, ...) printf(macropar_message, ##__VA_ARGS__)
 
@@ -44,13 +44,20 @@
 /* Global variables and objects */
 CO_t* CO = NULL; /* CANopen object */
 uint8_t LED_red, LED_green;
-ASC_uart_t ascUart;
+ASC_sock_t ascSock;
 
 const CAN_socket_t canSocket_def = {
     .sockfd = INVALID_SOCKET,
-    .isServer = DEFAULT_SERVER,
+    .isServer = 0,
     .host = DEFAULT_HOST,
     .port = DEFAULT_PORT
+};
+
+const ASC_socket_t ascSocket_def = {
+    .sockfd = INVALID_SOCKET,
+    .clientSockfd = INVALID_SOCKET,
+    .host = "0.0.0.0",
+    .port = 6000
 };
 
 /* Thread control */
@@ -99,18 +106,38 @@ main(int argc, char* argv[]) {
     CO_NMT_reset_cmd_t reset = CO_RESET_NOT;
     uint32_t heapMemoryUsed;
     CAN_socket_t canSocket;         /* CAN module address */
+    ASC_socket_t ascSocket;         /* ASC socket server address */
     uint8_t pendingNodeId = 10;     /* read from dip switches or nonvolatile memory, configurable by LSS slave */
     uint8_t activeNodeId = 10;      /* Copied from CO_pendingNodeId in the communication reset section */
     uint16_t pendingBitRate = 125;  /* read from dip switches or nonvolatile memory, configurable by LSS slave */
 
-	canSocket = canSocket_def;
+    canSocket = canSocket_def;
+    ascSocket = ascSocket_def;
+
     /* Parse command line arguments */
     if (argc >= 2) {
-        /* arg1: ip:port */
+        /* arg1: ASC server ip:port */
         char* colon = strchr(argv[1], ':');
         if (colon != NULL) {
             *colon = '\0';
-            strncpy(canSocket.host, argv[1], sizeof(canSocket.host) - 1);
+            strncpy(ascSocket.host, argv[1], sizeof(ascSocket.host) - 1);
+            ascSocket.host[sizeof(ascSocket.host) - 1] = '\0';
+            ascSocket.port = atoi(colon + 1);
+            if (ascSocket.port <= 0) {
+                ascSocket.port = 6000;
+            }
+            *colon = ':';
+        } else {
+            strncpy(ascSocket.host, argv[1], sizeof(ascSocket.host) - 1);
+            ascSocket.host[sizeof(ascSocket.host) - 1] = '\0';
+        }
+    }
+    if (argc >= 3) {
+        /* arg2: CAN client ip:port (connect to remote CAN service) */
+        char* colon = strchr(argv[2], ':');
+        if (colon != NULL) {
+            *colon = '\0';
+            strncpy(canSocket.host, argv[2], sizeof(canSocket.host) - 1);
             canSocket.host[sizeof(canSocket.host) - 1] = '\0';
             canSocket.port = atoi(colon + 1);
             if (canSocket.port <= 0) {
@@ -118,27 +145,14 @@ main(int argc, char* argv[]) {
             }
             *colon = ':';
         } else {
-            /* only IP, no port */
-            strncpy(canSocket.host, argv[1], sizeof(canSocket.host) - 1);
+            strncpy(canSocket.host, argv[2], sizeof(canSocket.host) - 1);
             canSocket.host[sizeof(canSocket.host) - 1] = '\0';
         }
     }
-    uint8_t uartId = 1;
-    if (argc >= 3) {
-        /* arg2: isServer (0=client, 1=server) */
-        canSocket.isServer = (atoi(argv[2]) != 0) ? 1 : 0;
-    }
-    if (argc >= 4) {
-        /* arg3: COM port number */
-        uartId = (uint8_t)atoi(argv[3]);
-        if (uartId == 0) {
-            uartId = 1;
-        }
-    }
 
-    log_printf("Config: host=%s, port=%d, mode=%s, COM=%d\n",
-               canSocket.host, canSocket.port,
-               canSocket.isServer ? "Server" : "Client", uartId);
+    log_printf("Config: ASC server=%s:%d, CAN client=%s:%d\n",
+               ascSocket.host, ascSocket.port,
+               canSocket.host, canSocket.port);
 
     /* Establish socket connection */
     {
@@ -273,12 +287,12 @@ main(int argc, char* argv[]) {
             }
 #endif
 
-            /* Initialize ASC_uart gateway */
-            err = ASC_uart_init(&ascUart, CO, uartId, 115200);
+            /* Initialize ASC_sock gateway */
+            err = ASC_sock_init(&ascSock, CO, &ascSocket);
             if (err != CO_ERROR_NO) {
-                log_printf("Warning: ASC_uart initialization failed: %d\n", err);
+                log_printf("Warning: ASC_sock initialization failed: %d\n", err);
             } else {
-                log_printf("ASC_uart initialized: COM%d, 115200 baud\n", uartId);
+                log_printf("ASC_sock initialized: %s:%d\n", ascSocket.host, ascSocket.port);
             }
         } else {
             log_printf("CANopenNode - Node-id not initialized\n");
@@ -311,8 +325,8 @@ main(int argc, char* argv[]) {
             CO_storageBlank_auto_process(&storage, false);
 		#endif
 
-            /* Process ASC_uart gateway */
-            ASC_uart_process(&ascUart, true, timeDifference_us);
+            /* Process ASC_sock gateway */
+            ASC_sock_process(&ascSock, true, timeDifference_us);
 
             /* optional sleep for short time */
             Sleep(1);
@@ -336,8 +350,8 @@ main(int argc, char* argv[]) {
     /* close socket connection */
     CO_CANdisconnect(&canSocket);
     
-    /* close ASC_uart */
-    ASC_uart_close(&ascUart);
+    /* close ASC_sock */
+    ASC_sock_close(&ascSock);
 
     log_printf("CANopenNode finished\n");
 
