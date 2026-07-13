@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="sock_asc" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="../../release/sock_asc" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Option parameters="192.168.174.130:5000 0 50" />
+				<Compiler>
+					<Add option="-g" />
+					<Add directory="../../CANopenNode" />
+					<Add directory="../../socket" />
+					<Add directory="code" />
+				</Compiler>
+				<Linker>
+					<Add library="ws2_32" />
+				</Linker>
+			</Target>
+			<Target title="Release">
+				<Option output="bin/Release/test-tcp" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+		</Compiler>
+		<Unit filename="../../CANopenNode/301/CO_Emergency.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../CANopenNode/301/CO_Emergency.h" />
+		<Unit filename="../../CANopenNode/301/CO_HBconsumer.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../CANopenNode/301/CO_HBconsumer.h" />
+		<Unit filename="../../CANopenNode/301/CO_NMT_Heartbeat.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../CANopenNode/301/CO_NMT_Heartbeat.h" />
+		<Unit filename="../../CANopenNode/301/CO_Node_Guarding.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../CANopenNode/301/CO_Node_Guarding.h" />
+		<Unit filename="../../CANopenNode/301/CO_ODinterface.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../CANopenNode/301/CO_ODinterface.h" />
+		<Unit filename="../../CANopenNode/301/CO_PDO.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../CANopenNode/301/CO_PDO.h" />
+		<Unit filename="../../CANopenNode/301/CO_SDOclient.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../CANopenNode/301/CO_SDOclient.h" />
+		<Unit filename="../../CANopenNode/301/CO_SDOserver.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../CANopenNode/301/CO_SDOserver.h" />
+		<Unit filename="../../CANopenNode/301/CO_SYNC.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../CANopenNode/301/CO_SYNC.h" />
+		<Unit filename="../../CANopenNode/301/CO_TIME.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../CANopenNode/301/CO_TIME.h" />
+		<Unit filename="../../CANopenNode/301/CO_config.h" />
+		<Unit filename="../../CANopenNode/301/CO_driver.h" />
+		<Unit filename="../../CANopenNode/301/CO_fifo.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../CANopenNode/301/CO_fifo.h" />
+		<Unit filename="../../CANopenNode/301/crc16-ccitt.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../CANopenNode/301/crc16-ccitt.h" />
+		<Unit filename="../../CANopenNode/303/CO_LEDs.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../CANopenNode/303/CO_LEDs.h" />
+		<Unit filename="../../CANopenNode/304/CO_GFC.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../CANopenNode/304/CO_GFC.h" />
+		<Unit filename="../../CANopenNode/304/CO_SRDO.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../CANopenNode/304/CO_SRDO.h" />
+		<Unit filename="../../CANopenNode/305/CO_LSS.h" />
+		<Unit filename="../../CANopenNode/305/CO_LSSmaster.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../CANopenNode/305/CO_LSSmaster.h" />
+		<Unit filename="../../CANopenNode/305/CO_LSSslave.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../CANopenNode/305/CO_LSSslave.h" />
+		<Unit filename="../../CANopenNode/309/CO_gateway_ascii.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../CANopenNode/309/CO_gateway_ascii.h" />
+		<Unit filename="../../CANopenNode/CANopen.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../CANopenNode/CANopen.h" />
+		<Unit filename="../../CANopenNode/extra/CO_trace.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../CANopenNode/extra/CO_trace.h" />
+		<Unit filename="../../CANopenNode/storage/CO_storage.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../CANopenNode/storage/CO_storage.h" />
+		<Unit filename="../../socket/CO_driver_sock.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../socket/CO_storage_sock.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../socket/CO_storage_sock.h" />
+		<Unit filename="../../socket/OD.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../socket/OD.h" />
+		<Unit filename="code/ASC_sock.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="code/ASC_sock.h" />
+		<Unit filename="code/CO_driver_target.h" />
+		<Unit filename="code/main.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Extensions>
+			<lib_finder disable_auto="1" />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
